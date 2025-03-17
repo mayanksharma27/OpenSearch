@@ -26,6 +26,7 @@ public class FileCacheStatsTests extends OpenSearchTestCase {
         final long miss = randomLongBetween(0, 10000);
         final long usage = randomLongBetween(10000, BYTES_IN_GB);
         final long activeUsage = randomLongBetween(10000, BYTES_IN_GB);
+        final long pinnedUsage = randomLongBetween(10000, BYTES_IN_GB);
         final long fullFileHitCount = randomLongBetween(0, 10000);
         final long fullFileRemoveCount = randomLongBetween(0, 10000);
         final long fullFileRemoveWeight = randomLongBetween(10000, BYTES_IN_GB);
@@ -45,6 +46,7 @@ public class FileCacheStatsTests extends OpenSearchTestCase {
             evicted,
             usage,
             activeUsage,
+            pinnedUsage,
             fullFileHitCount,
             fullFileRemoveCount,
             fullFileRemoveWeight,

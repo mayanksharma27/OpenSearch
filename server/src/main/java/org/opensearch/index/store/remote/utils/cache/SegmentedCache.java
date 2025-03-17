@@ -134,6 +134,18 @@ public class SegmentedCache<K, V> implements RefCountedCache<K, V> {
     }
 
     @Override
+    public void pin(K key) {
+        if (key == null) throw new NullPointerException();
+        segmentFor(key).pin(key);
+    }
+
+    @Override
+    public void unpin(K key) {
+        if (key == null) throw new NullPointerException();
+        segmentFor(key).unpin(key);
+    }
+
+    @Override
     public long prune() {
         long sum = 0L;
         for (RefCountedCache<K, V> cache : table) {
@@ -172,6 +184,21 @@ public class SegmentedCache<K, V> implements RefCountedCache<K, V> {
         return totalActiveUsage;
     }
 
+    /**
+     * Returns the pinned usage of this cache.
+     *
+     * @return the combined pinned weight of the values in this cache.
+     */
+    @Override
+    public long pinnedUsage() {
+        long totalPinnedUsage = 0L;
+        for (RefCountedCache<K, V> cache : table) {
+            CacheStats c = cache.stats();
+            totalPinnedUsage += c.pinnedUsage();
+        }
+        return totalPinnedUsage;
+    }
+
     @Override
     public CacheStats stats() {
 
@@ -184,6 +211,7 @@ public class SegmentedCache<K, V> implements RefCountedCache<K, V> {
         long totalEvictionWeight = 0L;
         long totalUsage = 0L;
         long totalActiveUsage = 0L;
+        long totalPinnedUsage = 0L;
 
         // full file counts
         long totalFullFileHitCount = 0L;
@@ -206,6 +234,7 @@ public class SegmentedCache<K, V> implements RefCountedCache<K, V> {
             totalEvictionWeight += c.evictionWeight();
             totalUsage += c.usage();
             totalActiveUsage += c.activeUsage();
+            totalPinnedUsage += c.pinnedUsage();
 
             CacheStats.FullFileStats fullFileStats = c.fullFileStats();
 
@@ -229,6 +258,7 @@ public class SegmentedCache<K, V> implements RefCountedCache<K, V> {
             totalEvictionWeight,
             totalUsage,
             totalActiveUsage,
+            totalPinnedUsage,
             totalFullFileHitCount,
             totalFullFileRemoveCount,
             totalFullFileRemoveWeight,

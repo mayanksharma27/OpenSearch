@@ -30,6 +30,7 @@ public final class CacheStats {
     private final long evictionWeight;
     private final long usage;
     private final long activeUsage;
+    private final long pinnedUsage;
     private final FullFileStats fullFileStats;
 
     /**
@@ -191,6 +192,7 @@ public final class CacheStats {
         long evictionWeight,
         long usage,
         long activeUsage,
+        long pinnedUsage,
         long fullFileHitCount,
         long fullFileRemoveCount,
         long fullFileRemoveWeight,
@@ -200,6 +202,7 @@ public final class CacheStats {
         long fullFileUsage,
         long fullFileActiveUsage
     ) {
+
         if ((hitCount < 0)
             || (missCount < 0)
             || (removeCount < 0)
@@ -218,6 +221,7 @@ public final class CacheStats {
         this.evictionWeight = evictionWeight;
         this.usage = usage;
         this.activeUsage = activeUsage;
+        this.pinnedUsage = pinnedUsage;
         this.fullFileStats = new FullFileStats(
             fullFileHitCount,
             fullFileRemoveCount,
@@ -356,6 +360,15 @@ public final class CacheStats {
     }
 
     /**
+     * Returns the total pinned weight of the cache.
+     *
+     * @return the total pinned weight of the cache
+     */
+    public long pinnedUsage() {
+        return pinnedUsage;
+    }
+
+    /**
      * Returns full file stats for the cache.
      * @return
      */
@@ -375,6 +388,7 @@ public final class CacheStats {
             evictionWeight,
             usage,
             activeUsage,
+            pinnedUsage,
             fullFileStats
         );
     }
@@ -396,6 +410,7 @@ public final class CacheStats {
             && evictionWeight == other.evictionWeight
             && usage == other.usage
             && activeUsage == other.activeUsage
+            && pinnedUsage == other.pinnedUsage
             && fullFileStats.equals(other.fullFileStats);
     }
 

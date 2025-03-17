@@ -121,6 +121,26 @@ public class FileCache implements RefCountedCache<Path, CachedIndexInput> {
         theCache.decRef(key);
     }
 
+    /**
+     * Pins the key in the cache, preventing it from being evicted.
+     *
+     * @param key
+     */
+    @Override
+    public void pin(Path key) {
+        theCache.pin(key);
+    }
+
+    /**
+     * Unpins the key in the cache, allowing it to be evicted.
+     *
+     * @param key
+     */
+    @Override
+    public void unpin(Path key) {
+        theCache.unpin(key);
+    }
+
     @Override
     public long prune() {
         return theCache.prune();
@@ -139,6 +159,16 @@ public class FileCache implements RefCountedCache<Path, CachedIndexInput> {
     @Override
     public long activeUsage() {
         return theCache.activeUsage();
+    }
+
+    /**
+     * Returns the pinned usage of this cache.
+     *
+     * @return the combined pinned weight of the values in this cache.
+     */
+    @Override
+    public long pinnedUsage() {
+        return theCache.pinnedUsage();
     }
 
     @Override

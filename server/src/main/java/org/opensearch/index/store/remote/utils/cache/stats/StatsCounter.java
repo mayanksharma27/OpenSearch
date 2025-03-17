@@ -55,7 +55,7 @@ public interface StatsCounter<K, V> {
      * {@link RefCountedCache#put(Object, Object)}
      * {@link RefCountedCache#compute(Object, BiFunction)}
      */
-    void recordReplacement(V oldValue, V newValue, long oldWeight, long newWeight, boolean shouldUpdateActiveUsage);
+    void recordReplacement(V oldValue, V newValue, long oldWeight, long newWeight, boolean shouldUpdateActiveUsage, boolean isPinned);
 
     /**
      * Records the eviction of an entry from the cache. This should only been called when an entry is
@@ -85,10 +85,24 @@ public interface StatsCounter<K, V> {
     void recordActiveUsage(V value, long weight, boolean shouldDecrease);
 
     /**
+     * Records the cache usage by entries which are pinned.
+     * This should be called when an entry is pinned/unpinned in the cache.
+     * @param weight Weight of the entry.
+     * @param shouldDecrease Should the pinned usage of the cache be decreased or not.
+     */
+    void recordPinnedUsage(long weight, boolean shouldDecrease);
+
+    /**
      * Resets the cache usage by entries which are active (being referenced).
      * This should be called when cache is cleared.
      */
     void resetActiveUsage();
+
+    /**
+     * Resets the cache usage by entries which are pinned.
+     * This should be called when cache is cleared.
+     */
+    void resetPinnedUsage();
 
     /**
      * Resets the cache usage.
@@ -107,6 +121,12 @@ public interface StatsCounter<K, V> {
      * @return Usage of the cache.
      */
     long usage();
+
+    /**
+     * Returns the pinned usage of the cache.
+     * @return Pinned usage of the cache.
+     */
+    long pinnedUsage();
 
     /**
      * Returns a snapshot of this counter's values. Note that this may be an inconsistent view, as it
